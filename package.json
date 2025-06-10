@@ -12,11 +12,13 @@
   "dependencies": {
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
+    "@t3-oss/env-core": "^0.13.8",
     "isbot": "^5.1.27",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.5.3",
-    "react-router-hono-server": "^2.13.0"
+    "react-router-hono-server": "^2.13.0",
+    "zod": "^3.25.57"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
