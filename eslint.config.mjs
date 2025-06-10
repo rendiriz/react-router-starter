@@ -1,6 +1,4 @@
-// eslint.config.js
 import js from '@eslint/js';
-// flat‐config entry point for prettier
 import prettier from 'eslint-config-prettier/flat';
 import pluginJsxA11y from 'eslint-plugin-jsx-a11y';
 import onlyWarn from 'eslint-plugin-only-warn';
