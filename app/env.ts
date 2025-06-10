@@ -4,6 +4,7 @@ import { z } from 'zod';
 export const env = createEnv({
   server: {
     SESSION_SECRET: z.string().min(1),
+    SESSION_MAX_AGE: z.number().min(1),
   },
   clientPrefix: 'VITE_PUBLIC_',
   client: {
