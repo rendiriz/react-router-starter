@@ -18,7 +18,6 @@ export function FilterOrganization({ filter }: { filter: string[] }) {
         {organizations.map((org) => (
           <li key={org.slug}>
             <div className="flex items-center gap-3">
-              {filter.includes(org.slug) ? 'Y' : 'F'}
               <Checkbox
                 key={org.id}
                 name="orgs"
