@@ -78,37 +78,43 @@ export default function Demo() {
       />
       <h1>Demo Page</h1>
 
-      <Form onChange={(event) => submit(event.currentTarget)}>
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <Suspense fallback={<FilterOrganizationSkeleton />}>
-              <Await
-                errorElement={<FilterOrganizationError />}
-                resolve={organizations}
-              >
-                <FilterOrganization filter={filterOrganization} />
-              </Await>
-            </Suspense>
-          </div>
-          <div className="col-span-2 flex flex-col">
-            <Input
-              type="text"
-              placeholder="search"
-              name="q"
-              defaultValue={filterSearch ?? undefined}
-            />
-
-            <Suspense fallback={<ListDatasetSkeleton />}>
-              <Await
-                errorElement={<ListDatasetError />}
-                resolve={datasets}
-              >
-                <ListDataset />
-              </Await>
-            </Suspense>
-          </div>
+      {/* <Form onChange={(event) => submit(event.currentTarget)}> */}
+      {/* <Form> */}
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <Suspense fallback={<FilterOrganizationSkeleton />}>
+            <Await
+              errorElement={<FilterOrganizationError />}
+              resolve={organizations}
+            >
+              <FilterOrganization filter={filterOrganization} />
+            </Await>
+          </Suspense>
         </div>
-      </Form>
+        <div className="col-span-2 flex flex-col">
+          <Input
+            type="text"
+            placeholder="search"
+            name="q"
+            defaultValue={filterSearch ?? undefined}
+            onChange={(event) => {
+              submit({
+                q: event.target.value,
+              });
+            }}
+          />
+
+          <Suspense fallback={<ListDatasetSkeleton />}>
+            <Await
+              errorElement={<ListDatasetError />}
+              resolve={datasets}
+            >
+              <ListDataset />
+            </Await>
+          </Suspense>
+        </div>
+      </div>
+      {/* </Form> */}
     </div>
   );
 }
