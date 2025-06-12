@@ -1,9 +1,8 @@
-import { useActionData } from 'react-router';
+import { redirect, useActionData } from 'react-router';
 import FormLogin from '@/auth/components/form-login';
 import { LoginFormSchema } from '@/domains/auth/auth.schema';
+import { getSession } from '@/lib/auth/default/session.server';
 import type { Route } from './+types/login';
-
-// import { getSession } from '@/lib/auth/default/session.server';
 
 type ActionData = {
   errors?: {
@@ -12,6 +11,15 @@ type ActionData = {
   };
   message?: string | null;
 };
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await getSession(request.headers.get('Cookie'));
+
+  if (session.has('userId')) {
+    // Redirect to the home page if they are already signed in.
+    return redirect('/demo');
+  }
+}
 
 export async function action({ request }: Route.ActionArgs) {
   // const session = await getSession(
