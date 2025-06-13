@@ -2,6 +2,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { Await, Form, useLoaderData, useSubmit } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { getOrganizations } from '@/domains/organization/organization.repository';
 import { env } from '@/env';
 import { requireAuth } from '@/lib/auth/default/session.server';
 import {
@@ -16,22 +17,17 @@ import {
 } from '../components/list-dataset';
 import type { Route } from './+types/demo';
 
-export interface Organizations {
-  id: string;
-  slug: string;
-  name: string;
+async function getAllOrganization(request: Request) {
+  const params = {
+    sort: 'name:asc',
+    where: JSON.stringify({ is_active: true, is_deleted: false }),
+    all: true,
+  };
+  const organization = await getOrganizations(request, params);
+  return organization.data;
 }
 
-async function getOrganizations(): Promise<Organizations[]> {
-  const response = await fetch(`${env.VITE_PUBLIC_API_URL}/organisasi`, {
-    method: 'GET',
-  });
-  const data = await response.json();
-  console.log('✅ Organizations fetched');
-  return data.data;
-}
-
-async function getDatasets(parameters: any): Promise<Organizations[]> {
+async function getDatasets(parameters: any): Promise<any[]> {
   let pWhere = {};
 
   if (parameters.organization.length > 0) {
@@ -62,7 +58,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const organization = url.searchParams.getAll('organization');
 
   const datasets = getDatasets({ search: query, organization });
-  const organizations = getOrganizations();
+  const organizations = getAllOrganization(request);
 
   return {
     datasets,
@@ -125,7 +121,7 @@ export default function Demo() {
 
     setTimeout(() => {
       isTypingRef.current = false;
-    }, 1000);
+    }, 5000);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {

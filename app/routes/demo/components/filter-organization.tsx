@@ -1,15 +1,10 @@
 import { useAsyncError } from 'react-router';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-
-interface Organizations {
-  id: string;
-  slug: string;
-  name: string;
-}
+import type { Organization } from '@/domains/organization/organization.type';
 
 interface FilterOrganizationProps {
-  items: Organizations[];
+  items: Organization[];
   selected: string[];
   onSelectionChange: (slug: string, isChecked: boolean) => void;
 }

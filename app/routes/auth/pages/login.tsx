@@ -1,4 +1,13 @@
 import { redirect, useActionData } from 'react-router';
+import { AlertCircleIcon } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { login } from '@/domains/auth/auth.repository';
 import { LoginFormSchema } from '@/domains/auth/auth.schema';
 import { createAuthSession } from '@/lib/auth/default/auth.server';
@@ -40,7 +49,7 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   try {
-    const tokens = await login({ username, password });
+    const tokens = await login(request, { username, password });
     const authSession = await createAuthSession(request, tokens);
 
     return redirect('/demo', {
@@ -74,20 +83,38 @@ export default function Login() {
   const actionData = useActionData() as ActionData;
 
   return (
-    <div>
+    <>
       <title>Login</title>
       <meta
         name="description"
         content="Login Description"
       />
-      <h1>Login Page</h1>
 
-      <div>
-        {actionData?.errors?.form && (
-          <p className="mt-2 text-sm text-red-600">{actionData.errors.form}</p>
-        )}
-        <FormLogin />
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <div className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Login to your account</CardTitle>
+                <CardDescription>
+                  Enter your email below to login to your account
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-6">
+                {actionData?.errors?.form && (
+                  <Alert variant="destructive">
+                    <AlertCircleIcon />
+                    <AlertDescription>
+                      <p>{actionData.errors.form}</p>
+                    </AlertDescription>
+                  </Alert>
+                )}
+                <FormLogin />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -62,6 +62,7 @@ export default function FormLogin() {
           <Button
             type="submit"
             className="w-full"
+            disabled={isSubmitting}
           >
             {isSubmitting ? 'Logging in...' : 'Login'}
           </Button>
