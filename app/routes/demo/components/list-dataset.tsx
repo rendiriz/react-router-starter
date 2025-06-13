@@ -1,4 +1,4 @@
-import { useAsyncError, useAsyncValue } from 'react-router';
+import { useAsyncError } from 'react-router';
 
 interface Dataset {
   id: string;
@@ -6,12 +6,14 @@ interface Dataset {
   name: string;
 }
 
-export function ListDataset() {
-  const dataset = useAsyncValue() as Dataset[];
+interface ListDatasetProps {
+  items: Dataset[];
+}
 
+export function ListDataset({ items }: ListDatasetProps) {
   return (
     <ul>
-      {dataset.map((item) => (
+      {items.map((item) => (
         <li key={item.id}>{item.name}</li>
       ))}
     </ul>

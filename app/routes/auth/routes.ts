@@ -5,6 +5,6 @@ const { layout, route } = relative('app/routes/auth');
 export default [
   layout('layouts/auth.tsx', [
     route('login', 'pages/login.tsx'),
-    route('search', 'actions/search.tsx'),
+    route('logout', 'pages/logout.tsx'),
   ]),
 ] satisfies RouteConfig;

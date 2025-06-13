@@ -1,4 +1,4 @@
-import { useAsyncError, useAsyncValue } from 'react-router';
+import { useAsyncError } from 'react-router';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
@@ -8,28 +8,39 @@ interface Organizations {
   name: string;
 }
 
-export function FilterOrganization({ filter }: { filter: string[] }) {
-  const organizations = useAsyncValue() as Organizations[];
+interface FilterOrganizationProps {
+  items: Organizations[];
+  selected: string[];
+  onSelectionChange: (slug: string, isChecked: boolean) => void;
+}
 
+export function FilterOrganization({
+  items,
+  selected,
+  onSelectionChange,
+}: FilterOrganizationProps) {
   return (
-    <>
-      {JSON.stringify(filter, null, 2)}
-      <ul>
-        {organizations.map((org) => (
-          <li key={org.slug}>
+    <div>
+      <h3 className="mb-2 text-lg font-semibold">Organizations</h3>
+      <ul className="space-y-2">
+        {items.map((item) => (
+          <li key={item.slug}>
             <div className="flex items-center gap-3">
               <Checkbox
-                key={org.id}
-                name="orgs"
-                value={org.slug}
-                defaultChecked={filter.includes(org.slug)}
+                id={`org-${item.slug}`}
+                name="organization"
+                value={item.slug}
+                checked={selected.includes(item.slug)}
+                onCheckedChange={(isChecked) => {
+                  onSelectionChange(item.slug, !!isChecked);
+                }}
               />
-              <Label htmlFor="terms">{org.name}</Label>
+              <Label htmlFor={`org-${item.slug}`}>{item.name}</Label>
             </div>
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }
 

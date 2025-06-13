@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
+    NODE_ENV: z.string().min(1),
     SESSION_SECRET: z.string().min(1),
     SESSION_MAX_AGE: z.coerce.number().min(1),
   },

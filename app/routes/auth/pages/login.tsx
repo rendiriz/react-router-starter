@@ -1,6 +1,9 @@
 import { redirect, useActionData } from 'react-router';
+import { login } from '@/domains/auth/auth.repository';
 import { LoginFormSchema } from '@/domains/auth/auth.schema';
-import { getSession } from '@/lib/auth/default/session.server';
+import { createAuthSession } from '@/lib/auth/default/auth.server';
+import { commitSession, getSession } from '@/lib/auth/default/session.server';
+import { FetchError } from '@/lib/error/error.type';
 import FormLogin from '../components/form-login';
 import type { Route } from './+types/login';
 
@@ -8,27 +11,22 @@ type ActionData = {
   errors?: {
     username?: string[];
     password?: string[];
+    form?: string;
   };
-  message?: string | null;
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get('Cookie'));
 
-  if (session.has('userId')) {
-    // Redirect to the home page if they are already signed in.
+  if (session.has('accessToken')) {
     return redirect('/demo');
   }
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  // const session = await getSession(
-  //   request.headers.get("Cookie")
-  // );
-
   const formData = await request.formData();
-  const username = formData.get('username');
-  const password = formData.get('password');
+  const username = formData.get('username') as string;
+  const password = formData.get('password') as string;
 
   const validatedFields = LoginFormSchema.safeParse({
     username,
@@ -38,13 +36,38 @@ export async function action({ request }: Route.ActionArgs) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: null,
     };
   }
 
-  return {
-    message: 'Validation failed. Please check the fields.',
-  };
+  try {
+    const tokens = await login({ username, password });
+    const authSession = await createAuthSession(request, tokens);
+
+    return redirect('/demo', {
+      headers: {
+        'Set-Cookie': await commitSession(authSession),
+      },
+    });
+  } catch (error) {
+    if (error instanceof FetchError) {
+      if (error.status === 401 || error.status === 403) {
+        return {
+          errors: { form: 'Invalid username or password.' },
+        };
+      }
+
+      return {
+        errors: { form: error.message },
+      };
+    }
+
+    console.error('An unexpected error occurred:', error);
+    return {
+      errors: {
+        form: 'An unexpected error occurred. Please try again later.',
+      },
+    };
+  }
 }
 
 export default function Login() {
@@ -60,8 +83,8 @@ export default function Login() {
       <h1>Login Page</h1>
 
       <div>
-        {actionData?.message && (
-          <p className="mt-2 text-sm text-red-600">{actionData.message}</p>
+        {actionData?.errors?.form && (
+          <p className="mt-2 text-sm text-red-600">{actionData.errors.form}</p>
         )}
         <FormLogin />
       </div>
