@@ -1,17 +1,17 @@
 import { Suspense } from 'react';
 import { Await, Form, useLoaderData, useSubmit } from 'react-router';
 import { Input } from '@/components/ui/input';
+import { env } from '@/env';
 import {
   FilterOrganization,
   FilterOrganizationError,
   FilterOrganizationSkeleton,
-} from '@/demo/components/filter-organization';
+} from '../components/filter-organization';
 import {
   ListDataset,
   ListDatasetError,
   ListDatasetSkeleton,
-} from '@/demo/components/list-dataset';
-import { env } from '@/env';
+} from '../components/list-dataset';
 import type { Route } from './+types/demo';
 
 export interface Organizations {

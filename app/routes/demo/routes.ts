@@ -1,6 +1,6 @@
 import { relative, type RouteConfig } from '@react-router/dev/routes';
 
-const { layout, route } = relative('app/demo');
+const { layout, route } = relative('app/routes/demo');
 
 export default [
   layout('layouts/demo.tsx', [

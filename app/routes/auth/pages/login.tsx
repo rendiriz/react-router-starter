@@ -1,7 +1,7 @@
 import { redirect, useActionData } from 'react-router';
-import FormLogin from '@/auth/components/form-login';
 import { LoginFormSchema } from '@/domains/auth/auth.schema';
 import { getSession } from '@/lib/auth/default/session.server';
+import FormLogin from '../components/form-login';
 import type { Route } from './+types/login';
 
 type ActionData = {
